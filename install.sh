@@ -33,10 +33,16 @@ if [[ "$OS" == *Alpine* ]]; then
     make
     cp bin/masscan /usr/local/bin/
     cd .. || exit 1
+    echo -e "${CYAN}清理构建临时文件和源码目录 masscan${RESET}"
+    rm -rf masscan
+    echo -e "${CYAN}卸载多余依赖 git build-base linux-headers${RESET}"
+    apk del git build-base linux-headers
+    apk cache clean
 elif [[ "$OS" == *Debian* || "$OS" == *Ubuntu* ]]; then
     echo -e "${CYAN}检测到 Debian/Ubuntu，开始安装依赖...${RESET}"
     apt update
     apt install -y curl unzip libpcap-dev masscan nodejs screen
+    apt clean
 else
     echo -e "${RED}无法识别的操作系统！仅支持 Alpine 或 Debian/Ubuntu。${RESET}"
     exit 1
@@ -71,6 +77,7 @@ rm -f "$ZIP_FILE"
 # ========== 完成提示 ==========
 echo
 echo -e "${GREEN}✅ 安装与解压完成！你可以使用以下命令启动项目：${RESET}"
+echo "当前目录磁盘剩余空间: $(df . | awk 'NR==2 {print int($4/1024)}') MB"
 echo -e "${BLUE}cd $EXTRACT_DIR${RESET}"
 echo -e "${YELLOW}node masscan.js${RESET}"
 echo
