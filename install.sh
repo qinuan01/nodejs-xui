@@ -11,11 +11,17 @@ OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 # 根据不同的操作系统安装相应的软件包
 if [[ "$OS" == *"Alpine"* ]]; then
     echo "检测到 Alpine Linux，安装必要的工具..."
-    apk add --no-cache curl unzip nodejs
+    apk update
+    apk add --no-cache curl unzip nodejs git build-base libpcap-dev linux-headers screen
+    git clone https://github.com/robertdavidgraham/masscan.git
+    cd masscan
+    make
+    cp bin/masscan /usr/local/bin
 elif [[ "$OS" == *"Debian"* || "$OS" == *"Ubuntu"* ]]; then
     echo "检测到 Debian/Ubuntu，安装必要的工具..."
     apt update
-    apt install -y curl unzip nodejs
+    apt install -y curl unzip libpcap-dev masscan nodejs screen
+    
 else
     echo "无法识别的操作系统。仅支持 Alpine 或 Debian/Ubuntu 系统。"
     exit 1
@@ -34,4 +40,4 @@ cd $EXTRACT_DIR
 
 # 提示用户运行项目
 echo "解压完成！你可以使用以下命令启动项目："
-echo "node index.js"  # 假设入口脚本是 index.js
+echo "node masscan.js"  # 假设入口脚本是 index.js
