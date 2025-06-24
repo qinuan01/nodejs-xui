@@ -16,11 +16,19 @@ EXTRACT_DIR="nodejs-xui-main"
 NODE_MODULES_URL="https://raw.githubusercontent.com/qinuan01/nodejs-xui/refs/heads/main/node_modules.zip"
 NODE_MODULES_ZIP="node_modules.zip"
 
-# ========== 检测操作系统 ==========
-OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release | tr -d '"')
+# ========== 一开始询问是否下载 node_modules ==========
+read -p "是否下载并解压 node_modules.zip 到项目目录？(y/n): " answer
+if [[ "$answer" =~ ^[Yy]$ ]]; then
+    DOWNLOAD_NODE_MODULES=true
+else
+    DOWNLOAD_NODE_MODULES=false
+fi
 
 echo -e "${BLUE}检测操作系统中...${RESET}"
 sleep 0.5
+
+# ========== 检测操作系统 ==========
+OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release | tr -d '"')
 
 # ========== 安装依赖 ==========
 if [[ "$OS" == *Alpine* ]]; then
@@ -59,15 +67,19 @@ unzip -o "$ZIP_FILE" -d .
 # ========== 进入目录 ==========
 cd "$EXTRACT_DIR" || { echo -e "${RED}进入目录失败！${RESET}"; exit 1; }
 
-# ========== 下载并解压 node_modules.zip ==========
-echo -e "${CYAN}下载 node_modules.zip 文件中...${RESET}"
-curl -L "$NODE_MODULES_URL" -o "$NODE_MODULES_ZIP"
+# ========== 根据变量决定是否下载并解压 node_modules.zip ==========
+if [ "$DOWNLOAD_NODE_MODULES" = true ]; then
+    echo -e "${CYAN}下载 node_modules.zip 文件中...${RESET}"
+    curl -L "$NODE_MODULES_URL" -o "$NODE_MODULES_ZIP"
 
-echo -e "${CYAN}解压 node_modules.zip 到当前目录（$EXTRACT_DIR）...${RESET}"
-unzip -o "$NODE_MODULES_ZIP" -d .
+    echo -e "${CYAN}解压 node_modules.zip 到当前目录（$EXTRACT_DIR）...${RESET}"
+    unzip -o "$NODE_MODULES_ZIP" -d .
 
-echo -e "${CYAN}删除 node_modules.zip 临时文件...${RESET}"
-rm -f "$NODE_MODULES_ZIP"
+    echo -e "${CYAN}删除 node_modules.zip 临时文件...${RESET}"
+    rm -f "$NODE_MODULES_ZIP"
+else
+    echo -e "${YELLOW}跳过下载和解压 node_modules.zip${RESET}"
+fi
 
 # ========== 返回上级目录，清理 Release zip ==========
 cd .. || exit 1
@@ -77,7 +89,7 @@ rm -f "$ZIP_FILE"
 # ========== 完成提示 ==========
 echo
 echo -e "${GREEN}✅ 安装与解压完成！你可以使用以下命令启动项目：${RESET}"
-echo "当前目录磁盘剩余空间: $(df . | awk 'NR==2 {print int($4/1024)}') MB"
+echo "当前目录磁盘剩余空间: $(df . | tail -1 | awk '{print int($4/1024)}') MB"
 echo -e "${BLUE}cd $EXTRACT_DIR${RESET}"
 echo -e "${YELLOW}node masscan.js${RESET}"
 echo
