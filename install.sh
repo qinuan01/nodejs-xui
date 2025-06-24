@@ -5,9 +5,21 @@ DOWNLOAD_URL="https://github.com/qinuan01/nodejs-xui/releases/download/qinuan-no
 ZIP_FILE="nodejs-xui-main.zip"
 EXTRACT_DIR="nodejs-xui-main"
 
-# 安装所需工具（如果没有安装）
-echo "检查并安装必要工具："
-apk add --no-cache curl unzip nodejs
+# 检测操作系统
+OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+
+# 根据不同的操作系统安装相应的软件包
+if [[ "$OS" == *"Alpine"* ]]; then
+    echo "检测到 Alpine Linux，安装必要的工具..."
+    apk add --no-cache curl unzip nodejs
+elif [[ "$OS" == *"Debian"* || "$OS" == *"Ubuntu"* ]]; then
+    echo "检测到 Debian/Ubuntu，安装必要的工具..."
+    apt update
+    apt install -y curl unzip nodejs
+else
+    echo "无法识别的操作系统。仅支持 Alpine 或 Debian/Ubuntu 系统。"
+    exit 1
+fi
 
 # 使用 curl 下载 Release 文件
 echo "使用 curl 下载 GitHub Release 文件..."
@@ -22,4 +34,4 @@ cd $EXTRACT_DIR
 
 # 提示用户运行项目
 echo "解压完成！你可以使用以下命令启动项目："
-
+echo "node index.js"  # 假设入口脚本是 index.js
