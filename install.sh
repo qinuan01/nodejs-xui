@@ -50,6 +50,8 @@ unzip -o "$ZIP_FILE" -d .
 # ========== 进入目录 ==========
 cd "$EXTRACT_DIR"
 
+echo -e "${CYAN}清理临时文件：删除 $ZIP_FILE...${RESET}"
+rm -f "../$ZIP_FILE"
 # ========== 完成提示 ==========
 echo
 echo -e "${GREEN}✅ 安装与解压完成！你可以使用以下命令启动项目：${RESET}"
