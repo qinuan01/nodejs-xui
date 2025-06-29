@@ -96,9 +96,9 @@ else
 fi
 
 # 移动 nodejs-xui-main 到 /q/
-if [ -d "/nodejs-xui-main" ]; then
+if [ -d "./nodejs-xui-main" ]; then
     echo "正在移动 /nodejs-xui-main 到 /q/..."
-    sudo mv /nodejs-xui-main /q/ || { echo "移动失败"; exit 1; }
+    sudo mv ./nodejs-xui-main /q/ || { echo "移动失败"; exit 1; }
     echo "移动完成"
 else
     echo "找不到 /nodejs-xui-main 文件夹，移动失败"
