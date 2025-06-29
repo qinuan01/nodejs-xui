@@ -1,5 +1,6 @@
 # nodejs-xui
 
+```bash
 **bash <(curl -fsSL https://raw.githubusercontent.com/qinuan01/nodejs-xui/main/install.sh)**
 
 
