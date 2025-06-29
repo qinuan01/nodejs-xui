@@ -44,7 +44,7 @@ if [[ "$OS" == *Alpine* ]]; then
     echo -e "${CYAN}清理构建临时文件和源码目录 masscan${RESET}"
     rm -rf masscan
     echo -e "${CYAN}卸载多余依赖 git build-base linux-headers${RESET}"
-    apk del git build-base linux-headers
+  #  apk del git build-base linux-headers
     apk cache clean
 elif [[ "$OS" == *Debian* || "$OS" == *Ubuntu* ]]; then
     echo -e "${CYAN}检测到 Debian/Ubuntu，开始安装依赖...${RESET}"
