@@ -85,6 +85,25 @@ fi
 cd .. || exit 1
 echo -e "${CYAN}清理临时文件：删除 $ZIP_FILE...${RESET}"
 rm -f "$ZIP_FILE"
+#!/bin/bash
+
+# 创建 /q 目录（如果不存在）
+if [ ! -d "/q" ]; then
+    echo "创建 /q 文件夹..."
+    sudo mkdir /q || { echo "无法创建 /q 文件夹"; exit 1; }
+else
+    echo "/q 文件夹已存在"
+fi
+
+# 移动 nodejs-xui-main 到 /q/
+if [ -d "/nodejs-xui-main" ]; then
+    echo "正在移动 /nodejs-xui-main 到 /q/..."
+    sudo mv /nodejs-xui-main /q/ || { echo "移动失败"; exit 1; }
+    echo "移动完成"
+else
+    echo "找不到 /nodejs-xui-main 文件夹，移动失败"
+    exit 1
+fi
 
 # ========== 完成提示 ==========
 echo
