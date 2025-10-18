@@ -49,8 +49,10 @@ if [[ "$OS" == *Alpine* ]]; then
 elif [[ "$OS" == *Debian* || "$OS" == *Ubuntu* ]]; then
     echo -e "${CYAN}检测到 Debian/Ubuntu，开始安装依赖...${RESET}"
     apt update
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
     apt install -y curl unzip libpcap-dev masscan nodejs screen
     apt clean
+    
 else
     echo -e "${RED}无法识别的操作系统！仅支持 Alpine 或 Debian/Ubuntu。${RESET}"
     exit 1
